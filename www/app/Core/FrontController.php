@@ -82,6 +82,22 @@ class FrontController
             'get'
         );
         Route::add(
+            '/pob-pontevedra-form',
+            function () {
+                $controlador = new \Com\Daw2\Controllers\PobPontevControllerForm();
+                $controlador->showPoblacionPontevedra();
+            },
+            'get'
+        );
+        Route::add(
+            '/pob-pontevedra-form',
+            function () {
+                $controlador = new \Com\Daw2\Controllers\PobPontevControllerForm();
+                $controlador->insertPoblacionPontevedraForm();
+            },
+            'post'
+        );
+        Route::add(
             '/pob-pontevedra',
             function () {
                 $controlador = new \Com\Daw2\Controllers\PobPontevController();

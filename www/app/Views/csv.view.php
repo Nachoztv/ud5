@@ -37,18 +37,4 @@
     }
     ?>
     </tbody>
-    <tfoot>
-    <tr>
-        <td></td>
-        <td></td>
-        <td>Max</td>
-        <td></td>
-    </tr>
-    <tr>
-        <td></td>
-        <td></td>
-        <td>Min</td>
-        <td></td>
-    </tr>
-    </tfoot>
 </table>

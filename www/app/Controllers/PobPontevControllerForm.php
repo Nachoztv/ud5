@@ -7,7 +7,7 @@ namespace Com\Daw2\Controllers;
 use Com\Daw2\Core\BaseController;
 use \Com\Daw2\Models\PobPontevModel;
 
-class PobPontevController extends BaseController
+class PobPontevControllerForm extends BaseController
 {
     public function showPoblacionPontevedra()
     {
@@ -18,6 +18,18 @@ class PobPontevController extends BaseController
         );
         $csvModel = new PobPontevModel('../app/Data/poblacion_pontevedra.csv');
         $_vars["data"] = $csvModel->pobPontevedra();
-        $this->view->showViews(array('templates/header.view.php', 'csv.view.php', 'templates/footer.view.php'), $_vars);
+        $this->view->showViews(array('templates/header.view.php', 'csvForm.view.php', 'templates/footer.view.php'), $_vars);
     }
+    public function insertPoblacionPontevedraForm()
+    {
+                $municipio =$_POST ['municipio'];
+                $sexo = $_POST ['sexo'];
+                $periodo =$_POST ['periodo'];
+                $total =$_POST ['total'];
+                $registro = array($municipio,$sexo,$periodo,$total);
+                $resource = fopen('../app/Data/poblacion_pontevedra.csv', 'a');
+                fputcsv($resource, $registro,";");
+                fclose($resource);
+            $this->showPoblacionPontevedra();
+            }
 }
