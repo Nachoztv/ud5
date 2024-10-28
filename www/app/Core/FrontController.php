@@ -105,6 +105,22 @@ class FrontController
             },
             'get'
         );
+        Route::add(
+            '/usuarios/new',
+            function () {
+                $controlador = new \Com\Daw2\Controllers\FormMVCController();
+                $controlador->showFormMVC();
+            },
+            'post'
+        );
+        Route::add(
+            '/usuarios/new',
+            function () {
+                $controlador = new \Com\Daw2\Controllers\FormMVCController();
+                $controlador->showFormMVC();
+            },
+            'get'
+        );
 
         Route::pathNotFound(
             function () {

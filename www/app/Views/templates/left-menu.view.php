@@ -54,6 +54,14 @@
                       </a>
                   </li>
               </ul>
+              <ul class="nav nav-treeview">
+                  <li class="nav-item">
+                      <a href="<?php echo $_ENV['host.folder']; ?>usuarios/new" class="nav-link <?php echo $_SERVER['REQUEST_URI'] === $_ENV['host.folder'].'usuarios/new' ? 'active' : ''; ?>">
+                          <i class="fas fa-laptop-code nav-icon"></i>
+                          <p>Añadir formularios a nuestro MVC</p>
+                      </a>
+                  </li>
+              </ul>
           </li>
         </ul>
       </nav>
