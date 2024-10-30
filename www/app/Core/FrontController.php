@@ -99,7 +99,7 @@ class FrontController
         );
         Route::add(
             '/pob-pontevedra',
-            function () {
+            function () { 
                 $controlador = new \Com\Daw2\Controllers\PobPontevController();
                 $controlador->showPoblacionPontevedra();
             },

@@ -9,4 +9,4 @@ class UsuarioController extends BaseController
     public function testConnect(): void{
         $model = new \Com\Daw2\Models\UsuarioModel();
     }
-}
+} 
