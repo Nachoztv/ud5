@@ -8,42 +8,60 @@ use Com\Daw2\Core\BaseController;
 class FormMVCController extends BaseController
 {
 
-
-public function showFormMVC(): void
-{
-    $_vars = array('titulo' => 'Formularios MVC',
-        'breadcumb' => array('Inicio' => array('url' => '#', 'active' => false)),
-        'div_titulo' => 'Formularios MVC',
-        'js' => array('plugins/datatables/js/jquery.dataTables.min.js', 'plugins/datatables/js/dataTables.bootstrap4.min.js')
-    );
-    /*$data = [];
-    if (isset($_POST['submit'])) {
-        $errors = checkform($_POST);
-        if (count($errors) > 0) {
-            $data['errors'] = $errors;
-        } else {
-            $json_array = json_decode($_POST["json"], true);
-            $data['resultado'] = calculeArray($json_array);
-        }
-    }
-    */
-        $this->view->showViews(array('templates/header.view.php', 'FormMVC.view.php', 'templates/footer.view.php'), $_vars);
-    }
-
-
-    public function checkErrors(array $data) : array
+    private const TIPOS_SUSCRIPCION = ['free','silver','gold'];
+    public function showFormMVC(): void
     {
-        $errors = "";
-        $data['input_user'] = filter_var($_POST['user'], FILTER_SANITIZE_SPECIAL_CHARS);
-        $data['input_email'] = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
-        $data['input_tarjeta'] = filter_var($_POST['tarjeta'], FILTER_SANITIZE_NUMBER_INT);
-        if (!preg_match('/^\d{16}$/', $data['input_tarjeta'])) {
-            $data['errors'] = "El formato de la tarjeta no es el correcto";
-        }
-return $errors;
+
+        $data = array('titulo' => 'Formularios MVC(Alta Usuario)',
+            'breadcumb' => array('Inicio' => array('url' => '#', 'active' => false)),
+            'tiposSuscripcion' => self::TIPOS_SUSCRIPCION
+        );
+        $this->view->showViews(array('templates/header.view.php', 'FormMVC.view.php', 'templates/footer.view.php'), $data);
     }
+
+
+    public function checkform(array $data): array
+    {
+        $errors = [];
+        if (!preg_match('/^[\p{L}\p{N}_]/iu', $data['user'])) {
+            $errors['username'] = 'El nombre debe tener letras, numeros o _.';
+        }
+        if (!filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
+            $errors['email'] = 'Introduce un email válido';
+        }
+        if (!in_array($data['typeSubs'], self::TIPOS_SUSCRIPCION)) {
+            $errors['typeSubs'] = 'El tipo de usuario de suscripcion es requerido';
+        }
+        if (!empty($data['input_tarjeta'])) {
+            if (!preg_match('/^\d{16}$/', $data['tarjeta'])) {
+                $errors['tarjeta'] = "El formato de la tarjeta no es el correcto";
+            }
+        }else{
+            if (in_array($data['typeSubs'],['gold','silver'])){
+                $errors['tarjeta'] = 'Tienes que insertar un numero de tarjeta ya que es requerido por la sub';
+            }
+        }
+        if (!isset($data['check'])){
+            $errors['check'] = 'Acepta los terminos para continuar';
+        }
+        return $errors;
+    }
+
     public function insertFormMVC(): void
     {
 
+        $data = array('titulo' => 'Formularios MVC(Alta Usuario)',
+            'breadcumb' => array('Inicio' => array('url' => '#', 'active' => false)),
+            'tiposSuscripcion' => self::TIPOS_SUSCRIPCION
+        );
+
+            $data['errors'] = $this->checkform($_POST);
+            $data['exito'] = empty($data['errors']);
+        $data['input'] = filter_var_array($_POST, FILTER_SANITIZE_SPECIAL_CHARS);
+        $data['input']['typeSubs'] = $_POST['typeSubs'];
+            $data['input'] = filter_var_array($_POST, FILTER_SANITIZE_SPECIAL_CHARS);
+
+                $this->view->showViews(array('templates/header.view.php', 'FormMVC.view.php', 'templates/footer.view.php'), $data);
+
     }
-    }
+}

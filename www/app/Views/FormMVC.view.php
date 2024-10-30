@@ -1,4 +1,15 @@
 <div class="row">
+    <?php
+    if (isset($exito) && $exito) {
+    ?>
+    <div class="col-12">
+        <div class="alert alert-success">
+            Usuario registrado con éxito.
+        </div>
+    </div>
+    <?php
+    }
+    ?>
     <div class="col-12">
         <div class="card shadow mb-4">
             <form method="post">
@@ -15,37 +26,46 @@
                             <div class="mb-3">
                                 <label for="user">Username:</label>
                                 <input type="text" class="form-control" name="user" id="user" value="" />
+                                <p class = "text-danger small" ><?php echo $errors['username'] ?? '' ;?></p>
                             </div>
                         </div>
                         <div class="col-12 col-lg-4">
                             <div class="mb-3">
                                 <label for="email">Email:</label>
                                 <input type="email" class="form-control" name="email" id="email" value="" />
+                                <p class = "text-danger small" ><?php echo $errors['email'] ?? '' ;?></p>
                             </div>
                         </div>
                         <div class="col-12 col-lg-4">
                             <div class="mb-3">
-                                <label for="subs">Tipo De Suscripción:</label>
-                                    <select name="typeSubs" id="subs">
-                                        <option value="free">free</option>
-                                        <option value="silver">silver</option>
-                                        <option value="gold">gold</option>
+                                <label for="typeSubs">Tipo De Suscripción:</label>
+                                    <select name="typeSubs" id="typeSubs">
+                                        <option value="">-</option>
+                                        <?php
+                                        foreach ($tiposSuscripcion as $ts){
+
+                                            ?>
+                                        <option value="<?php echo $ts?>"<?php echo (isset($input['typeSubs']) && $ts == $input['typeSubs']) ? 'selected' : ''; ?>> <?php echo ucfirst($ts)?></option>
+                                        <?php
+                                        }
+                                        ?>
                                     </select>
+                                <p class = "text-danger small" ><?php echo $errors['typeSubs'] ?? '' ;?></p>
                             </div>
                         </div>
                         <div class="col-12 col-lg-4">
                             <div class="mb-3">
                                 <label for="tarjeta">Numero de la tarjeta de crédito:</label>
                                 <input type="number" class="form-control" name="tarjeta" id="tarjeta" value="" />
-                                <p class = "text-danger small" ><?php echo $data['errors'] ?? '' ;?></p>
+                                <p class = "text-danger small" ><?php echo $errors['tarjeta'] ?? '' ;?></p>
                             </div>
                         </div>
 
                         <div class="col-12 col-lg-4">
                             <div class="mb-3">
                                 <label for="check">Acepto los términos:</label>
-                                <input type="checkbox" class="form-control" name="check" id="check" required value="" />
-                                <p class = "text-danger small" ><?php echo $data['errors'] ?? '' ;?></p>
+                                <input type="checkbox" class="form-control" name="check" id="check" value="" />
+                                <p class = "text-danger small" ><?php echo $errors['check'] ?? '' ;?></p>
                             </div>
                         </div>
                         <input type="submit" name="submit" class="btn btn-primary" value="Insertar User"/>
