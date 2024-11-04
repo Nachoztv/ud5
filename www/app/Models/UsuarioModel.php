@@ -1,25 +1,46 @@
 <?php
 namespace Com\Daw2\Models;
+use Com\Daw2\Core\BaseDbModel;
 use \PDO;
-class UsuarioModel{
-    public function __construct()
-    {
-        $host = 'ud5-mysql';
-        $db = 'ud5';
-        $user = 'admin';
-        $pass = 'daw2pass';
-        $charset = 'utf8mb4';
+class UsuarioModel extends BaseDbModel
+{
+    public function getUsuariosConnection(){
+        $this ->pdo;
+    }
+    public function getUsers(): array{
+       $stmt = $this ->pdo -> query('SELECT us.*,ar.nombre_rol ,ac.country_name
+                                            FROM usuario us
+                                            JOIN aux_rol ar ON us.id_rol = ar.id_rol
+                                            LEFT JOIN aux_countries ac ON us.id_country = ac.id');
+       $_users = $stmt -> fetchAll();
+        return $_users;
+    }
+    public function getUsersBruto(): array{
+        $stmt = $this ->pdo -> query('SELECT us.*,ar.nombre_rol ,ac.country_name
+                                           FROM usuario us
+                                           JOIN aux_rol ar ON us.id_rol = ar.id_rol
+                                           LEFT JOIN aux_countries ac ON us.id_country = ac.id
+                                           ORDER BY us.salarioBruto DESC');
+        $_users = $stmt -> fetchAll();
+        return $_users;
+    }
+    public function getUsersStandard(): array{
 
-        $dsn = "mysql:host=$host;dbname=$db;charset=$charset";
-        $options = [
-            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-            PDO::ATTR_EMULATE_PREPARES => false,
-        ];
-        try {
-            $pdo = new PDO($dsn, $user, $pass, $options);
-        } catch (\PDOException $e) {
-            throw new \PDOException($e->getMessage(), (int)$e->getCode());
-        }
+        $stmt = $this ->pdo -> query('SELECT us.*,ar.nombre_rol ,ac.country_name
+                                           FROM usuario us
+                                           JOIN aux_rol ar ON us.id_rol = ar.id_rol
+                                           LEFT JOIN aux_countries ac ON us.id_country = ac.id
+                                           WHERE us.id_rol = 5');
+        $_users = $stmt -> fetchAll();
+        return $_users;
+    }
+    public function getUsersCarlos(): array{
+        $stmt = $this ->pdo -> query('SELECT us.*,ar.nombre_rol ,ac.country_name
+                                           FROM usuario us
+                                           JOIN aux_rol ar ON us.id_rol = ar.id_rol
+                                           LEFT JOIN aux_countries ac ON us.id_country = ac.id
+                                           WHERE us.username REGEXP "^Carlos"');
+        $_users = $stmt -> fetchAll();
+        return $_users;
     }
 }

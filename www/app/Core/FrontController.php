@@ -129,6 +129,38 @@ class FrontController
             },
             'get'
         );
+        Route::add(
+            '/users',
+            function () {
+                $controlador = new \Com\Daw2\Controllers\UsuarioController();
+                $controlador->showUsers();
+            },
+            'get'
+        );
+        Route::add(
+            '/users-bruto',
+            function () {
+                $controlador = new \Com\Daw2\Controllers\UsuarioController();
+                $controlador->showUsersBruto();
+            },
+            'get'
+        );
+        Route::add(
+            '/users-standard',
+            function () {
+                $controlador = new \Com\Daw2\Controllers\UsuarioController();
+                $controlador->showUsersStandard();
+            },
+            'get'
+        );
+        Route::add(
+            '/users-carlos',
+            function () {
+                $controlador = new \Com\Daw2\Controllers\UsuarioController();
+                $controlador->showUsersCarlos();
+            },
+            'get'
+        );
         Route::pathNotFound(
             function () {
                 $controller = new \Com\Daw2\Controllers\ErroresController();
