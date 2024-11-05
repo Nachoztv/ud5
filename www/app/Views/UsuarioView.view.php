@@ -1,6 +1,6 @@
 <div class="col-12">
     <div class="card shadow mb-4">
-        <form method="post">
+        <form method="get">
             <input type="hidden" name="order" value="1"/>
             <div
                     class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
@@ -13,8 +13,8 @@
                     <div class="col-12 col-lg-4">
                         <div class="mb-3">
                             <label for="user">Username:</label>
-                            <input type="text" class="form-control" name="user" id="user" value="" />
-                            <p class = "text-danger small" ><?php echo $errors['username'] ?? '' ;?></p>
+                            <input type="text" class="form-control" name="user" id="user" value="<?php echo $_GET['user'] ?? '' ;?>" />
+                            <p class = "text-danger small" ><?php echo $errors['user'] ?? '' ;?></p>
                         </div>
                     </div>
                     <input type="submit" name="submit" class="btn btn-primary " value="Filtrar"/>
@@ -35,6 +35,7 @@
     <thead>
     <tbody>
         <?php
+        if(!empty($usuarios)){
         foreach($usuarios as $user){
             ?>
                 <tr class="<?php echo !$user['activo']  ? 'table-danger' : '' ?>">
@@ -47,7 +48,7 @@
             </tr>
             <?php
         }
-
+        }
         ?>
     </tbody>
 </table>

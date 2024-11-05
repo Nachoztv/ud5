@@ -43,4 +43,10 @@ class UsuarioModel extends BaseDbModel
         $_users = $stmt -> fetchAll();
         return $_users;
     }
+    public function getUsersByName($name): array{
+       $stmt =$this->pdo ->prepare("SELECT * FROM usuario us WHERE us.username LIKE ?");
+       $stmt->execute(['%'.$name.'%']);
+       $_users = $stmt -> fetchAll();
+        return $_users;
+    }
 }

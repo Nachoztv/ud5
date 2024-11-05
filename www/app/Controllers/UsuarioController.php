@@ -57,7 +57,24 @@ class UsuarioController extends BaseController
         $data['usuarios'] = $model->getUsersCarlos();
         $this->view->showViews(array('templates/header.view.php', 'UsuarioView.view.php', 'templates/footer.view.php'), $data);
     }
+public function showUsersByName(): void{
+        $model = new \Com\Daw2\Models\UsuarioModel();
+    $data = array('titulo' => 'Usuarios',
+        'breadcumb' => array('Inicio' => array('url' => '#', 'active' => false)),
+    );
+    if(!empty($_GET['user'])) {
+        $user = $_GET['user'];
+        $data['usuarios'] = $model->getUsersByName($user);
+        if(empty($data['usuarios'])) {
+            $data['errors']['user'] = 'No se ha encontrado ningún usuario con ese nombre';
+        }
+        $data['usuarios'] = $this->calcularNeto($data['usuarios']);
+    }else{
+        $data['errors']['user'] = 'Por favor introduzca un usuario';
+    }
+    $this->view->showViews(array('templates/header.view.php', 'UsuarioView.view.php', 'templates/footer.view.php'), $data);
 
+}
 
 
 } 
