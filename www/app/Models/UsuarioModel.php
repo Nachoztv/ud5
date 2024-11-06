@@ -49,4 +49,16 @@ class UsuarioModel extends BaseDbModel
        $_users = $stmt -> fetchAll();
         return $_users;
     }
+    public function getUsersByRol($rol): array{
+        $stmt =$this->pdo ->prepare("SELECT * FROM usuario us  JOIN aux_rol ar ON us.id_rol = ar.id_rol WHERE ar.id_rol = ?");
+        $stmt->execute([$rol]);
+        $_users = $stmt -> fetchAll();
+        return $_users;
+    }
+    public function getUsersByIRPF($irpf): array{
+        $stmt =$this->pdo ->prepare("SELECT * FROM usuario us WHERE us.retencionIRPF = ?");
+        $stmt->execute([$irpf]);
+        $_users = $stmt -> fetchAll();
+        return $_users;
+    }
 }

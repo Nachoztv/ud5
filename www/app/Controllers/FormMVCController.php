@@ -57,11 +57,10 @@ class FormMVCController extends BaseController
 
             $data['errors'] = $this->checkform($_POST);
             $data['exito'] = empty($data['errors']);
-        $data['input'] = filter_var_array($_POST, FILTER_SANITIZE_SPECIAL_CHARS);
+        $data['input'] = filter_var_array($_POST, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
         $data['input']['typeSubs'] = $_POST['typeSubs'];
-            $data['input'] = filter_var_array($_POST, FILTER_SANITIZE_SPECIAL_CHARS);
+            $data['input'] = filter_var_array($_POST, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
                 $this->view->showViews(array('templates/header.view.php', 'FormMVC.view.php', 'templates/footer.view.php'), $data);
-
     }
 }

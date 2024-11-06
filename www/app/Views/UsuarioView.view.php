@@ -13,8 +13,34 @@
                     <div class="col-12 col-lg-4">
                         <div class="mb-3">
                             <label for="user">Username:</label>
-                            <input type="text" class="form-control" name="user" id="user" value="<?php echo $_GET['user'] ?? '' ;?>" />
-                            <p class = "text-danger small" ><?php echo $errors['user'] ?? '' ;?></p>
+                            <input type="text" class="form-control" name="user" id="user"
+                                   value="<?php echo $_GET['user'] ?? ''; ?>"/>
+                            <p class="text-danger small"><?php echo $errors['user'] ?? ''; ?></p>
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-4">
+                        <div class="mb-3">
+                            <label for="irpf">IRPF:</label>
+                            <input type="number" class="form-control" name="irpf" id="irpf"
+                                   value="<?php echo $_GET['irpf'] ?? ''; ?>"/>
+                            <p class="text-danger small"><?php echo $errors['irpf'] ?? ''; ?></p>
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-4">
+                        <div class="mb-3">
+                            <label for="id_rol">Tipo De Rol:</label>
+                            <br>
+                            <select name="id_rol" id="id_rol">
+                                <option value="">-</option>
+                                <?php
+                                foreach ($tiposRol as $rol) {
+                                    ?>
+                                    <option value="<?php echo $rol['id_rol'] ?>"<?php echo (isset($input['id_rol']) && $rol['id_rol']) == $input['id_rol'] ? 'selected' : ''; ?>> <?php echo ucfirst($rol['nombre_rol']) ?></option>
+                                    <?php
+                                }
+                                ?>
+                            </select>
+                            <p class="text-danger small"><?php echo $errors['id_rol'] ?? ''; ?></p>
                         </div>
                     </div>
                     <input type="submit" name="submit" class="btn btn-primary " value="Filtrar"/>
@@ -34,21 +60,21 @@
     </tr>
     <thead>
     <tbody>
-        <?php
-        if(!empty($usuarios)){
-        foreach($usuarios as $user){
+    <?php
+    if (!empty($usuarios)) {
+        foreach ($usuarios as $user) {
             ?>
-                <tr class="<?php echo !$user['activo']  ? 'table-danger' : '' ?>">
-            <td><?php echo $user['username']; ?></td>
-                    <td><?php echo number_format($user['salarioBruto'],2,',','.'); ?></td>
-                    <td><?php echo number_format($user['retencionIRPF'],0); ?>%</td>
-                    <td><?php echo $user['id_rol']; ?></td>
-                    <td><?php echo $user['id_country']; ?></td>
-                    <td><?php echo str_replace([',','.','_'],['_',',','.'],$user['salarioNeto']);?></td>
+            <tr class="<?php echo !$user['activo'] ? 'table-danger' : '' ?>">
+                <td><?php echo $user['username']; ?></td>
+                <td><?php echo number_format($user['salarioBruto'], 2, ',', '.'); ?></td>
+                <td><?php echo number_format($user['retencionIRPF'], 0); ?>%</td>
+                <td><?php echo $user['id_rol']; ?></td>
+                <td><?php echo $user['id_country']; ?></td>
+                <td><?php echo str_replace([',', '.', '_'], ['_', ',', '.'], $user['salarioNeto']); ?></td>
             </tr>
             <?php
         }
-        }
-        ?>
+    }
+    ?>
     </tbody>
 </table>

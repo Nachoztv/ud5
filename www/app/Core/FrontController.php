@@ -130,7 +130,7 @@ class FrontController
             'get'
         );
         Route::add(
-            '/users',
+            '/users-showUsers',
             function () {
                 $controlador = new \Com\Daw2\Controllers\UsuarioController();
                 $controlador->showUsers();
@@ -162,10 +162,12 @@ class FrontController
             'get'
         );
         Route::add(
-            '/users-name',
+            '/users',
             function () {
                 $controlador = new \Com\Daw2\Controllers\UsuarioController();
-                $controlador->showUsersByName();
+               //$controlador->showUsersByName();
+                $controlador->showUsersByRol();
+                //$controlador->showUsersByIRPF();
             },
             'get'
         );
