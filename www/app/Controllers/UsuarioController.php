@@ -126,4 +126,44 @@ class UsuarioController extends BaseController
         }
         $this->view->showViews(array('templates/header.view.php', 'UsuarioView.view.php', 'templates/footer.view.php'), $data);
     }
+    public function showUsersBySalary(): void
+    {
+        $model = new \Com\Daw2\Models\UsuarioModel();
+        $data = array('titulo' => 'Usuarios',
+            'breadcumb' => array('Inicio' => array('url' => '#', 'active' => false)),
+        );
+        if (!empty($_GET['salMin']) && !empty($_GET['salMax'])) {
+            $salMin = filter_var($_GET['salMin'], FILTER_SANITIZE_NUMBER_FLOAT);
+            $salMax = filter_var($_GET['salMax'], FILTER_SANITIZE_NUMBER_FLOAT);
+            if ($salMin > $salMax) {
+                $data['errors']['salary'] = 'El salario minimo, no puede ser mayor que el salario maximo';
+            }
+            $data['usuarios'] = $model->getUsersBySal($salMin, $salMax);
+            if (empty($data['usuarios'])) {
+                $data['errors']['salary'] = 'No se ha encontrado ningún usuario con ese rango de salario';
+            }
+            $data['usuarios'] = $this->calcularNeto($data['usuarios']);
+        } else {
+            $data['errors']['salary'] = 'Por favor introduzca un rango de salario';
+        }
+        $this->view->showViews(array('templates/header.view.php', 'UsuarioView.view.php', 'templates/footer.view.php'), $data);
+    }
+    public function showUsersByCountry(): void
+    {
+        $model = new \Com\Daw2\Models\CountryModel();
+        $data = array('titulo' => 'Usuarios',
+            'breadcumb' => array('Inicio' => array('url' => '#', 'active' => false)),
+        );
+        if (!empty($_GET['nacionalidad'])) {
+            $nacionalidad = filter_var($_GET['nacionalidad'], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+            $data['usuarios'] = $model->getUsersByCountry($nacionalidad);
+            if (empty($data['usuarios'])) {
+                $data['errors']['nacionalidad'] = 'No se ha encontrado ningún usuario con esta nacionalidad: ' . $nacionalidad;
+            }
+            $data['usuarios'] = $this->calcularNeto($data['usuarios']);
+        } else {
+            $data['errors']['nacionalidad'] = 'Por favor introduzca una nacionalidad';
+        }
+        $this->view->showViews(array('templates/header.view.php', 'UsuarioView.view.php', 'templates/footer.view.php'), $data);
+    }
 }

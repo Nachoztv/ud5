@@ -61,4 +61,10 @@ class UsuarioModel extends BaseDbModel
         $_users = $stmt -> fetchAll();
         return $_users;
     }
+    public function getUsersBySal($salMin, $salMax): array{
+        $stmt =$this->pdo ->prepare("SELECT * FROM usuario us WHERE us.salarioBruto BETWEEN ? AND ?");
+        $stmt->execute([$salMin,$salMax]);
+        $_users = $stmt -> fetchAll();
+        return $_users;
+    }
 }

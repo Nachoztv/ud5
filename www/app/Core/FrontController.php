@@ -166,8 +166,10 @@ class FrontController
             function () {
                 $controlador = new \Com\Daw2\Controllers\UsuarioController();
                //$controlador->showUsersByName();
-                $controlador->showUsersByRol();
                 //$controlador->showUsersByIRPF();
+                //$controlador->showUsersByRol();
+                //$controlador->showUsersBySalary();
+                $controlador->showUsersByCountry();
             },
             'get'
         );

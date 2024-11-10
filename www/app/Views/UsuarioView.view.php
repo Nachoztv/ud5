@@ -43,6 +43,25 @@
                             <p class="text-danger small"><?php echo $errors['id_rol'] ?? ''; ?></p>
                         </div>
                     </div>
+                    <div class="col-12 col-lg-4">
+                        <div class="mb-3">
+                            <label for="salMin">Salario Minimo:</label>
+                            <input type="number" class="form-control" name="salMin" id="salMin"
+                                   value="<?php echo $_GET['salMin'] ?? ''; ?>"/>
+                            <label for="salMax">Salario Maximo:</label>
+                            <input type="number" class="form-control" name="salMax" id="salMax"
+                                   value="<?php echo $_GET['salMax'] ?? ''; ?>"/>
+                        </div>
+                        <p class="text-danger small"><?php echo $errors['salary'] ?? ''; ?></p>
+                    </div>
+                    <div class="col-12 col-lg-4">
+                        <div class="mb-3">
+                            <label for="nacionalidad">Nacionalidad:</label>
+                            <input type="text" class="form-control" name="nacionalidad" id="nacionalidad"
+                                   value="<?php echo $_GET['nacionalidad'] ?? ''; ?>"/>
+                            <p class="text-danger small"><?php echo $errors['nacionalidad'] ?? ''; ?></p>
+                        </div>
+                    </div>
                     <input type="submit" name="submit" class="btn btn-primary " value="Filtrar"/>
         </form>
     </div>
