@@ -7,6 +7,34 @@ class UsuarioModel extends BaseDbModel
     public function getUsuariosConnection(){
         $this ->pdo;
     }
+    private const SELECT_FROM = "SELECT us.*, ar.nombre_rol, ac.country_name
+                                    FROM usuario us
+                                    JOIN aux_rol ar ON us.id_rol = ar.id_rol
+                                    LEFT JOIN aux_countries ac ON us.id_country = ac.id";
+    public function getUsersByAny($_vars): array{
+        if (empty($_vars)) {
+            $statement = $this->pdo->query(self::SELECT_FROM);
+            return $statement->fetchAll(PDO::FETCH_ASSOC);
+        } else {
+            $condiciones = [];
+            if (isset($_vars["user"])) {
+                $condiciones[]='us.username LIKE :user';
+            }
+            if (isset($_vars["id_rol"])) {
+                $condiciones[]='us.id_rol = :id_rol';
+            }
+            if (isset($_vars["salMin"])) {
+                $condiciones[]='us.salarioBruto >= :salMin';
+            }
+            if (isset($_vars["salMax"])) {
+                $condiciones[]='us.salarioBruto <= :salMax';
+            }
+            $sql = self::SELECT_FROM . ' WHERE ' . implode(' AND ', $condiciones);
+            $statement = $this->pdo->prepare($sql);
+            $statement->execute($_vars);
+            return $statement->fetchAll(PDO::FETCH_ASSOC);
+        }
+    }
     public function getUsers(): array{
        $stmt = $this ->pdo -> query('SELECT us.*,ar.nombre_rol ,ac.country_name
                                             FROM usuario us
@@ -62,7 +90,7 @@ class UsuarioModel extends BaseDbModel
         return $_users;
     }
     public function getUsersBySal($salMin, $salMax): array{
-        $stmt =$this->pdo ->prepare("SELECT * FROM usuario us WHERE us.salarioBruto BETWEEN ? AND ?");
+        $stmt =$this->pdo ->prepare("SELECT * FROM usuario us WHERE us.salarioBruto BETWEEN ? AND ? ORDER BY us.salarioBruto DESC");
         $stmt->execute([$salMin,$salMax]);
         $_users = $stmt -> fetchAll();
         return $_users;
