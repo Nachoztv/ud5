@@ -20,10 +20,19 @@
                     </div>
                     <div class="col-12 col-lg-4">
                         <div class="mb-3">
-                            <label for="irpf">IRPF:</label>
-                            <input type="number" class="form-control" name="irpf" id="irpf"
-                                   value="<?php echo $_GET['irpf'] ?? ''; ?>"/>
-                            <p class="text-danger small"><?php echo $errors['irpf'] ?? ''; ?></p>
+                            <label for="retencionIRPF">Tipo De IRPF:</label>
+                            <br>
+                            <select name="retencionIRPF" id="retencionIRPF">
+                                <option value="">-</option>
+                                <?php
+                                foreach ($tiposIrpf as $irpf) {
+                                    ?>
+                                    <option value="<?php echo $irpf['retencionIRPF']; ?>"<?php echo (isset($input['retencionIRPF']) && $irpf['retencionIRPF']) == $input['retencionIRPF'] ? 'selected' : ''; ?>> <?php echo ucfirst($irpf['retencionIRPF']) ?></option>
+                                    <?php
+                                }
+                                ?>
+                            </select>
+                            <p class="text-danger small"><?php echo $errors['retencionIRPF'] ?? ''; ?></p>
                         </div>
                     </div>
                     <div class="col-12 col-lg-4">

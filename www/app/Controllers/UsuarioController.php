@@ -18,9 +18,15 @@ class UsuarioController extends BaseController
     public function showUsers(): void
     {
         $model = new \Com\Daw2\Models\UsuarioModel();
+        $modelRol = new \Com\Daw2\Models\RolModel();
         $data = array('titulo' => 'Usuarios',
             'breadcumb' => array('Inicio' => array('url' => '#', 'active' => false)),
         );
+
+        $data['tiposRol'] = $modelRol->getUsersByRol();
+        $data['tiposIrpf'] = $model->getTypesOfIrpf();
+        $data['input']['id_rol'] = $_GET['id_rol'] ?? '';
+        $data['input']['retencionIRPF'] = $_GET['retencionIRPF'] ?? '';
         $_vars=[];
         if (!empty($_GET['user'])) {
             $_vars['user'] = '%'.$_GET['user'].'%';
@@ -34,24 +40,19 @@ class UsuarioController extends BaseController
         if(!empty($_GET['salMax']) && filter_var($_GET['salMax'], FILTER_VALIDATE_FLOAT)) {
             $_vars['salMax'] = new Decimal($_GET['salMax']);
         }
-            /*
-            $minSalar = (!empty($_GET['salMin']) && filter_var($_GET['salMin'], FILTER_VALIDATE_FLOAT)) ? new Decimal($_GET['salMin']) : null;
-            $maxSalar = (!empty($_GET['salMax']) && filter_var($_GET['salMax'], FILTER_VALIDATE_FLOAT)) ? new Decimal($_GET['salMax']) : null;
-            $_vars['salMin'] = $minSalar;
-            $_vars['salMax'] = $maxSalar;
-        } elseif (
-            (!empty($_GET['min_retencion']) && filter_var($_GET['min_retencion'], FILTER_VALIDATE_FLOAT))
-            || (!empty($_GET['max_retencion']) && filter_var($_GET['max_retencion'], FILTER_VALIDATE_FLOAT))
-        ) {
-            $minRetencion = (!empty($_GET['min_retencion']) && filter_var($_GET['min_retencion'], FILTER_VALIDATE_FLOAT)) ? new Decimal($_GET['min_retencion']) : null;
-            $maxRetencion = (!empty($_GET['max_retencion']) && filter_var($_GET['max_retencion'], FILTER_VALIDATE_FLOAT)) ? new Decimal($_GET['max_retencion']) : null;
-            $usuarios = $model->getByRetencion($minRetencion, $maxRetencion);
-        } elseif (!empty($_GET['id_country'])) {
-            $usuarios = $model->getByCountries($_GET['id_country']);
-        } else {
+            if(!empty($_GET['retencionIRPF'])){
+                $_vars['retencionIRPF'] = $_GET['retencionIRPF'];
+            }
+
+       if(!empty($_GET['nacionalidad'])) {
+           $_vars['nacionalidad'] = $_GET['nacionalidad'];
+       }
+        if (empty($_vars)){
             $usuarios = $model->getUsers();
-        }*/
-        $usuarios = $model->getUsersByAny($_vars);
+        }
+        if (!empty($_vars)) {
+            $usuarios = $model->getUsersByAny($_vars);
+        }
         $data['usuarios'] = $this->calcularNeto($usuarios);
         $this->view->showViews(array('templates/header.view.php', 'UsuarioView.view.php', 'templates/footer.view.php'), $data);
     }

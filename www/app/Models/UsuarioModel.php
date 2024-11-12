@@ -29,7 +29,15 @@ class UsuarioModel extends BaseDbModel
             if (isset($_vars["salMax"])) {
                 $condiciones[]='us.salarioBruto <= :salMax';
             }
-            $sql = self::SELECT_FROM . ' WHERE ' . implode(' AND ', $condiciones);
+            if (isset($_vars["retencionIRPF"])) {
+                $condiciones[]='us.retencionIRPF = :retencionIRPF';
+            }
+            /*
+            if (isset($_vars["nacionalidad"])) {
+                $condiciones[]='ac.country_name LIKE :%nacionalidad%';
+            }*/
+            /*JOIN aux_countries ac ON us.id_country = ac.id*/
+            $sql = self::SELECT_FROM . ' WHERE ' . implode(' AND ', $condiciones). ' ORDER BY us.salarioBruto ASC';
             $statement = $this->pdo->prepare($sql);
             $statement->execute($_vars);
             return $statement->fetchAll(PDO::FETCH_ASSOC);
@@ -83,8 +91,13 @@ class UsuarioModel extends BaseDbModel
         $_users = $stmt -> fetchAll();
         return $_users;
     }
+
+    public function getTypesOfIrpf(): array{
+        $stmt =$this->pdo ->query("SELECT DISTINCT us.retencionIRPF FROM usuario us ORDER BY us.retencionIRPF");
+        return $stmt -> fetchAll();
+    }
     public function getUsersByIRPF($irpf): array{
-        $stmt =$this->pdo ->prepare("SELECT * FROM usuario us WHERE us.retencionIRPF = ?");
+        $stmt =$this->pdo ->prepare("SELECT *  FROM usuario us WHERE us.retencionIRPF = ?");
         $stmt->execute([$irpf]);
         $_users = $stmt -> fetchAll();
         return $_users;
