@@ -7,13 +7,17 @@ class UsuarioModel extends BaseDbModel
     public function getUsuariosConnection(){
         $this ->pdo;
     }
+    public const ORDER_COLUMNS = ['username', 'salarioBruto', 'retencionIRPF', 'nombre_rol', 'country_name'];
     private const SELECT_FROM = "SELECT us.*, ar.nombre_rol, ac.country_name
                                     FROM usuario us
                                     JOIN aux_rol ar ON us.id_rol = ar.id_rol
                                     LEFT JOIN aux_countries ac ON us.id_country = ac.id";
-    public function getUsersByAny($_vars): array{
+    public function getUsersByAny($_vars,$order): array{
         if (empty($_vars)) {
-            $statement = $this->pdo->query(self::SELECT_FROM);
+            $statement = $this->pdo->query(self::SELECT_FROM. ' ORDER BY '.self::ORDER_COLUMNS[abs($order) - 1]);
+            if ($order < 0){
+                $statement = $this->pdo->query(self::SELECT_FROM. ' ORDER BY '.self::ORDER_COLUMNS[abs($order) - 1] . ' DESC ');
+            }
             return $statement->fetchAll(PDO::FETCH_ASSOC);
         } else {
             $condiciones = [];
@@ -36,8 +40,10 @@ class UsuarioModel extends BaseDbModel
             if (isset($_vars["nacionalidad"])) {
                 $condiciones[]='ac.country_name LIKE :%nacionalidad%';
             }*/
-            /*JOIN aux_countries ac ON us.id_country = ac.id*/
-            $sql = self::SELECT_FROM . ' WHERE ' . implode(' AND ', $condiciones). ' ORDER BY us.salarioBruto ASC';
+            $sql = self::SELECT_FROM . ' WHERE ' . implode(' AND ', $condiciones). ' ORDER BY ' .self::ORDER_COLUMNS[abs($order) - 1];
+            if ($order < 0){
+                $sql .= ' DESC ';
+            }
             $statement = $this->pdo->prepare($sql);
             $statement->execute($_vars);
             return $statement->fetchAll(PDO::FETCH_ASSOC);

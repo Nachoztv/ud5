@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Com\Daw2\Controllers;
 
 use Com\Daw2\Core\BaseController;
+use Com\Daw2\Models\RolModel;
+use Com\Daw2\Models\UsuarioModel;
 use Decimal\Decimal;
 
 class UsuarioController extends BaseController
@@ -14,7 +16,7 @@ class UsuarioController extends BaseController
         $model = new \Com\Daw2\Models\UsuarioModel();
         $model->getUsuariosConnection();
     }
-
+    const ORDER_DEFECTO = 1;
     public function showUsers(): void
     {
         $model = new \Com\Daw2\Models\UsuarioModel();
@@ -22,7 +24,6 @@ class UsuarioController extends BaseController
         $data = array('titulo' => 'Usuarios',
             'breadcumb' => array('Inicio' => array('url' => '#', 'active' => false)),
         );
-
         $data['tiposRol'] = $modelRol->getUsersByRol();
         $data['tiposIrpf'] = $model->getTypesOfIrpf();
         $data['input']['id_rol'] = $_GET['id_rol'] ?? '';
@@ -50,13 +51,35 @@ class UsuarioController extends BaseController
         if (empty($_vars)){
             $usuarios = $model->getUsers();
         }
-        if (!empty($_vars)) {
-            $usuarios = $model->getUsersByAny($_vars);
+
+            $order = $this->getOrderColumn();
+            $data['order'] = $order;
+            $usuarios = $model->getUsersByAny($_vars,$order);
+
+        $order = $this->getOrderColumn();
+        $data['order'] = $order;
+
+        $_copiaGET = $_GET;
+        unset($_copiaGET['order']);
+        $data['queryString']= http_build_query($_copiaGET);
+        if (!empty($data['queryString'])) {
+            $data['queryString'] .= '&';
         }
+
+        //if(str_contains($_GET,'users?order=-1')){remove_url_arg($_GET, "users?order=-1")
         $data['usuarios'] = $this->calcularNeto($usuarios);
         $this->view->showViews(array('templates/header.view.php', 'UsuarioView.view.php', 'templates/footer.view.php'), $data);
     }
+    private function getOrderColumn(): int
+    {
+        if (isset($_GET['order']) && filter_var($_GET['order'], FILTER_VALIDATE_INT)) {
+            if ($_GET['order'] > -(count(UsuarioModel::ORDER_COLUMNS)) && $_GET['order'] <= count(UsuarioModel::ORDER_COLUMNS)) {
+                return (int)$_GET['order'];
+            }
 
+        }
+        return self::ORDER_DEFECTO;
+    }
     private function calcularNeto(array $usuarios): array
     {
         foreach ($usuarios as &$usuario) {

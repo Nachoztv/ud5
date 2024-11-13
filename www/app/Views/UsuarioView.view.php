@@ -27,7 +27,7 @@
                                 <?php
                                 foreach ($tiposIrpf as $irpf) {
                                     ?>
-                                    <option value="<?php echo $irpf['retencionIRPF']; ?>"<?php echo (isset($input['retencionIRPF']) && $irpf['retencionIRPF']) == $input['retencionIRPF'] ? 'selected' : ''; ?>> <?php echo ucfirst($irpf['retencionIRPF']) ?></option>
+                                    <option value="<?php echo $irpf['retencionIRPF']; ?>" <?php echo (isset($input['retencionIRPF']) && $irpf['retencionIRPF'] == $input['retencionIRPF']) ? 'selected' : ''; ?>> <?php echo ucfirst($irpf['retencionIRPF']) ?></option>
                                     <?php
                                 }
                                 ?>
@@ -44,7 +44,7 @@
                                 <?php
                                 foreach ($tiposRol as $rol) {
                                     ?>
-                                    <option value="<?php echo $rol['id_rol'] ?>"<?php echo (isset($input['id_rol']) && $rol['id_rol']) == $input['id_rol'] ? 'selected' : ''; ?>> <?php echo ucfirst($rol['nombre_rol']) ?></option>
+                                    <option value="<?php echo $rol['id_rol'] ?>" <?php echo (isset($input['id_rol']) && $rol['id_rol'] == $input['id_rol']) ? 'selected' : ''; ?>> <?php echo ucfirst($rol['nombre_rol']) ?></option>
                                     <?php
                                 }
                                 ?>
@@ -76,28 +76,31 @@
     </div>
 </div>
 </div>
+<?php  if (!empty($usuarios)) {
+    ?>
+
 <table id="csvTable" class="table table-striped">
     <thead>
     <tr>
-        <th>username</th>
-        <th>Salario Bruto</th>
-        <th>IRPF</th>
-        <th>Rol</th>
-        <th>Country</th>
+        <th><a href="<?php echo $_ENV['host.folder'].'users?'.$queryString.'order='.(($order == 1) ? '-' : ''); ?>1">Nombre de usuario</a> <?php if (abs($order) == 1) { ?><i class="fas fa-sort-amount-<?php echo $order < 0 ? 'up' : 'down'; ?>-alt"></i><?php } ?></th>
+        <th><a href="<?php echo  (isset($_GET['order']) && $_GET['order'] ==2) ? $_ENV['host.folder'].'users?order=-2' . $queryString : $_ENV['host.folder'].'users?order=2' . $queryString ?>">Salario bruto</a> <?php if ($order == 2) { ?><i class="fas fa-sort-amount-<?php echo $order < 0 ? 'up' :'down';?>-alt"></i><?php } ?></th></th>
+        <th><a href="<?php echo (isset($_GET['order']) && $_GET['order'] ==3) ? $_ENV['host.folder'].'users?order=-3' . $queryString : $_ENV['host.folder'].'users?order=3' . $queryString ?>">Retención IRPF</a> <?php if ($order == 3) { ?><i class="fas fa-sort-amount-<?php echo $order < 0 ? 'up' :'down';?>-alt"></i><?php } ?></th></th>
+        <th><a href="<?php echo  (isset($_GET['order']) && $_GET['order'] ==4) ? $_ENV['host.folder'].'users?order=-4' . $queryString : $_ENV['host.folder'].'users?order=4' . $queryString ?>">Rol</a> <?php if ($order == 4) { ?><i class="fas fa-sort-amount-<?php echo $order < 0 ? 'up' :'down';?>-alt"></i><?php } ?></th></th>
+        <th><a href="<?php echo  (isset($_GET['order']) && $_GET['order'] ==5) ? $_ENV['host.folder'].'users?order=-5' . $queryString : $_ENV['host.folder'].'users?order=5' . $queryString ?>">Nacionalidad</a> <?php if ($order == 5) { ?><i class="fas fa-sort-amount-<?php echo $order < 0 ? 'up' :'down';?>-alt"></i><?php } ?></th></th>
         <th>Salario Neto</th>
     </tr>
     <thead>
     <tbody>
     <?php
-    if (!empty($usuarios)) {
+
         foreach ($usuarios as $user) {
             ?>
             <tr class="<?php echo !$user['activo'] ? 'table-danger' : '' ?>">
                 <td><?php echo $user['username']; ?></td>
                 <td><?php echo number_format($user['salarioBruto'], 2, ',', '.'); ?></td>
                 <td><?php echo number_format($user['retencionIRPF'], 0); ?>%</td>
-                <td><?php echo $user['id_rol']; ?></td>
-                <td><?php echo $user['id_country']; ?></td>
+                <td><?php echo ucfirst($user['nombre_rol']); ?></td>
+                <td><?php echo $user['country_name']; ?></td>
                 <td><?php echo str_replace([',', '.', '_'], ['_', ',', '.'], $user['salarioNeto']); ?></td>
             </tr>
             <?php
