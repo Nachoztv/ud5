@@ -57,9 +57,14 @@ class UsuarioController extends BaseController
         $order = $this->getOrderColumn();
         $data['order'] = $order;
 
+        $data['numberOfFiles'] =  $model->getUsersByAnyPages($_vars, $order);
+
+        $page = $this->getPage($data['numberOfFiles']);
+        $data['page'] = $page;
 
         $_copiaGET = $_GET;
         unset($_copiaGET['order']);
+        unset($_copiaGET['page']);
 
         $data['queryString'] = http_build_query($_copiaGET);
         if (!empty($data['queryString'])) {
@@ -80,6 +85,17 @@ class UsuarioController extends BaseController
             }
         }
         return self::ORDER_DEFECTO;
+    }
+
+
+    private function getPage(int $max): int
+    {
+        if (isset($_GET['page']) && filter_var($_GET['page'], FILTER_VALIDATE_INT)) {
+            if ($_GET['page'] > 1 && $_GET['page'] <= $max) {
+                return (int)$_GET['page'];
+            }
+        }
+        return 1;
     }
 
     private function calcularNeto(array $usuarios): array

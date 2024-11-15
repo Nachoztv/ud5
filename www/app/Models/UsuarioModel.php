@@ -63,19 +63,16 @@ class UsuarioModel extends BaseDbModel
         }
     }
 
-    public function getUsersByAnyPages($_vars, $order): array
+    public function getUsersByAnyPages($_vars, $order): int
     {
-        $elementosPorPagina = 25;
+       /* $elementosPorPagina = 25;
         $paginaActual = isset($_GET['page']) ? $_GET['page'] : 1;
-        $inicio = ($paginaActual - 1) * $elementosPorPagina;
+        $inicio = ($paginaActual - 1) * $elementosPorPagina;*/
 
         if (empty($_vars)) {
-            $statement = $this->pdo->query(self::COUNT_FROM . ' ORDER BY ' . self::ORDER_COLUMNS[abs($order) - 1]);
-            if ($order < 0) {
-                $statement = $this->pdo->query(self::COUNT_FROM . ' ORDER BY ' . self::ORDER_COLUMNS[abs($order) - 1] . ' DESC');
-            }
-            return $statement->fetchAll(PDO::FETCH_ASSOC);
-        } else {
+            $statement = $this->pdo->query(self::COUNT_FROM);
+            $numberOfPages = $statement->fetchColumn(0);
+            return round($numberOfPages/25);
             $condiciones = [];
             if (isset($_vars["user"])) {
                 $condiciones[] = 'us.username LIKE :user';
@@ -96,14 +93,11 @@ class UsuarioModel extends BaseDbModel
             if (isset($_vars["nacionalidad"])) {
                 $condiciones[]='ac.country_name LIKE :%nacionalidad%';
             }*/
-            $sql = self::COUNT_FROM . ' WHERE ' . implode(' AND ', $condiciones) . ' ORDER BY ' . self::ORDER_COLUMNS[abs($order) - 1];
-            if ($order < 0) {
-                $sql = self::COUNT_FROM . ' WHERE ' . implode(' AND ', $condiciones) . ' ORDER BY ' . self::ORDER_COLUMNS[abs($order) - 1] . ' DESC';
-            }
+            $sql = self::COUNT_FROM . ' WHERE ' . implode(' AND ', $condiciones);
             $statement = $this->pdo->prepare($sql);
             $statement->execute($_vars);
-
-            return $statement->fetchAll(PDO::FETCH_ASSOC);
+            $numberOfPages = $statement->fetchColumn(0);
+            return round($numberOfPages/25);
         }
     }
     public function getUsers(): array
