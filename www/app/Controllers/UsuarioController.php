@@ -53,25 +53,36 @@ class UsuarioController extends BaseController
         if (empty($_vars)) {
             $usuarios = $model->getUsers();
         }
+        $limit = 25;
+        $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+
 
         $order = $this->getOrderColumn();
         $data['order'] = $order;
 
-        $data['numberOfFiles'] =  $model->getUsersByAnyPages($_vars, $order);
+        $numberOfPages = $model ->getUsersByAnyPages($_vars,$order);
 
-        $page = $this->getPage($data['numberOfFiles']);
+        $data['numberOfPages'] = (int)$numberOfPages;
+
+        $page = $this->getPage((int)$numberOfPages);
+
         $data['page'] = $page;
 
+
+        $offset = ($page - 1) * $limit;
+
+        $usuarios = $model->getUsersByAny($_vars, $order,(int)$offset,(int)$limit);
+
+
         $_copiaGET = $_GET;
-        unset($_copiaGET['order']);
-        unset($_copiaGET['page']);
+        unset($_copiaGET['order'], $_copiaGET['page']);
 
         $data['queryString'] = http_build_query($_copiaGET);
         if (!empty($data['queryString'])) {
             $data['queryString'] .= '&';
         }
 
-        $usuarios = $model->getUsersByAny($_vars, $order);
+
 
         $data['usuarios'] = $this->calcularNeto($usuarios);
         $this->view->showViews(array('templates/header.view.php', 'UsuarioView.view.php', 'templates/footer.view.php'), $data);

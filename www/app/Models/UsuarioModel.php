@@ -22,13 +22,13 @@ class UsuarioModel extends BaseDbModel
                                     JOIN aux_rol ar ON us.id_rol = ar.id_rol
                                     LEFT JOIN aux_countries ac ON us.id_country = ac.id";
 
-    public function getUsersByAny($_vars, $order): array
+    public function getUsersByAny($_vars, $order, $offset, $limit): array
     {
 
         if (empty($_vars)) {
-            $statement = $this->pdo->query(self::SELECT_FROM . ' ORDER BY ' . self::ORDER_COLUMNS[abs($order) - 1]);
+            $statement = $this->pdo->query(self::SELECT_FROM . ' ORDER BY ' . self::ORDER_COLUMNS[abs($order) - 1] . ' LIMIT '.  intval($offset) .','. intval($limit));
             if ($order < 0) {
-                $statement = $this->pdo->query(self::SELECT_FROM . ' ORDER BY ' . self::ORDER_COLUMNS[abs($order) - 1] . ' DESC');
+                $statement = $this->pdo->query(self::SELECT_FROM . ' ORDER BY ' . self::ORDER_COLUMNS[abs($order) - 1] . ' DESC' . ' LIMIT '.  intval($offset) .','. intval($limit));
             }
             return $statement->fetchAll(PDO::FETCH_ASSOC);
         } else {
@@ -52,11 +52,12 @@ class UsuarioModel extends BaseDbModel
             if (isset($_vars["nacionalidad"])) {
                 $condiciones[]='ac.country_name LIKE :%nacionalidad%';
             }*/
-            $sql = self::SELECT_FROM . ' WHERE ' . implode(' AND ', $condiciones) . ' ORDER BY ' . self::ORDER_COLUMNS[abs($order) - 1];
+            $sql = self::SELECT_FROM . ' WHERE ' . implode(' AND ', $condiciones) . ' ORDER BY ' . self::ORDER_COLUMNS[abs($order) - 1] . ' LIMIT '.  intval($offset) .','. intval($limit);
             if ($order < 0) {
-                $sql = self::SELECT_FROM . ' WHERE ' . implode(' AND ', $condiciones) . ' ORDER BY ' . self::ORDER_COLUMNS[abs($order) - 1] . ' DESC';
+                $sql = self::SELECT_FROM . ' WHERE ' . implode(' AND ', $condiciones) . ' ORDER BY ' . self::ORDER_COLUMNS[abs($order) - 1] . ' DESC' . ' LIMIT '.  intval($offset) .','. intval($limit);
             }
             $statement = $this->pdo->prepare($sql);
+
             $statement->execute($_vars);
 
             return $statement->fetchAll(PDO::FETCH_ASSOC);
@@ -65,14 +66,12 @@ class UsuarioModel extends BaseDbModel
 
     public function getUsersByAnyPages($_vars, $order): int
     {
-       /* $elementosPorPagina = 25;
-        $paginaActual = isset($_GET['page']) ? $_GET['page'] : 1;
-        $inicio = ($paginaActual - 1) * $elementosPorPagina;*/
 
         if (empty($_vars)) {
             $statement = $this->pdo->query(self::COUNT_FROM);
             $numberOfPages = $statement->fetchColumn(0);
-            return round($numberOfPages/25);
+            return ceil($numberOfPages / 25);
+        }
             $condiciones = [];
             if (isset($_vars["user"])) {
                 $condiciones[] = 'us.username LIKE :user';
@@ -97,9 +96,9 @@ class UsuarioModel extends BaseDbModel
             $statement = $this->pdo->prepare($sql);
             $statement->execute($_vars);
             $numberOfPages = $statement->fetchColumn(0);
-            return round($numberOfPages/25);
+            return ceil($numberOfPages / 25);
         }
-    }
+
     public function getUsers(): array
     {
         $stmt = $this->pdo->query('SELECT us.*,ar.nombre_rol ,ac.country_name
