@@ -18,7 +18,7 @@ class UsuarioController extends BaseController
     }
 
     const ORDER_DEFECTO = 1;
-
+const TIPOS_IRPF = [18,20,30];
     public function showUsers(): void
     {
         $model = new \Com\Daw2\Models\UsuarioModel();
@@ -75,13 +75,19 @@ class UsuarioController extends BaseController
 
 
         $_copiaGET = $_GET;
-        unset($_copiaGET['order'], $_copiaGET['page']);
+        unset($_copiaGET['page']);
+        $data['queryStringNoPage'] = http_build_query($_copiaGET);
+
+        if (!empty($data['queryString'])) {
+            $data['queryStringNoPage'] .= '&';
+        }
+
+        unset($_copiaGET['order']);
 
         $data['queryString'] = http_build_query($_copiaGET);
         if (!empty($data['queryString'])) {
             $data['queryString'] .= '&';
         }
-
 
 
         $data['usuarios'] = $this->calcularNeto($usuarios);

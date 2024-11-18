@@ -14,4 +14,8 @@ class CountryModel extends BaseDbModel
         $_users = $stmt -> fetchAll();
         return $_users;
     }
+    public function getCountries(): array{
+        $stmt =$this->pdo ->query("SELECT DISTINCT auc.country_name FROM aux_countries auc");
+        return $stmt->fetchAll();
+    }
 }

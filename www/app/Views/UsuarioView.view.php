@@ -114,7 +114,7 @@
     <nav aria-label="Navegacion por paginas">
         <ul class="pagination justify-content-center">
             <li class="page-item <?php echo (isset($page) && $page ==1) ? 'disabled' : '';?>">
-                <a class="page-link" href="/users?page=1&<?php echo $queryString; ?>" aria-label="First">
+                <a class="page-link" href="page=1&<?php echo $queryString; ?>" aria-label="First">
                     <span aria-hidden="true">&laquo;</span>
                     <span class="sr-only">First</span>
                 </a>

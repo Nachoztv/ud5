@@ -174,6 +174,14 @@ class FrontController
             },
             'get'
         );
+        Route::add(
+            '/insert-users',
+            function () {
+                $controlador = new \Com\Daw2\Controllers\formUsuarioController();
+                $controlador->showForm();
+            },
+            'get'
+        );
         Route::pathNotFound(
             function () {
                 $controller = new \Com\Daw2\Controllers\ErroresController();
