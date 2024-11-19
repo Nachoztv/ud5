@@ -66,13 +66,22 @@
                     </div>
                     <div class="col-12 col-lg-4">
                         <div class="mb-3">
-                            <label for="nacionalidad">Nacionalidad:</label>
-                            <input type="text" class="form-control" name="nacionalidad" id="nacionalidad"
-                                   value="<?php echo $_GET['nacionalidad'] ?? ''; ?>"/>
-                            <p class="text-danger small"><?php echo $errors['nacionalidad'] ?? ''; ?></p>
+                            <label for="id">Nacionalidad:</label>
+                            <br>
+                            <select name="id" id="id">
+                                <option value="">-</option>
+                                <?php
+                                foreach ($tiposCountry as $country) {
+                                    ?>
+                                    <option value="<?php echo $country['id'] ?>" <?php echo (isset($input['id']) && $country['id'] == $input['id']) ? 'selected' : ''; ?>> <?php echo ucfirst($country['country_name']) ?></option>
+                                    <?php
+                                }
+                                ?>
+                            </select>
+                            <p class="text-danger small"><?php echo $errors['id'] ?? ''; ?></p>
                         </div>
                     </div>
-                    <input type="submit" name="submit" class="btn btn-primary " value="Filtrar"/>
+                    <input type="submit" name="submit" class="btn btn-primary " value="Insertar"/>
         </form>
     </div>
 </div>
@@ -114,7 +123,7 @@
     <nav aria-label="Navegacion por paginas">
         <ul class="pagination justify-content-center">
             <li class="page-item <?php echo (isset($page) && $page ==1) ? 'disabled' : '';?>">
-                <a class="page-link" href="page=1&<?php echo $queryString; ?>" aria-label="First">
+                <a class="page-link" href="/users?page=1&<?php echo $queryString; ?>" aria-label="First">
                     <span aria-hidden="true">&laquo;</span>
                     <span class="sr-only">First</span>
                 </a>

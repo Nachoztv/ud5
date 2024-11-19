@@ -48,10 +48,9 @@ class UsuarioModel extends BaseDbModel
             if (isset($_vars["retencionIRPF"])) {
                 $condiciones[] = 'us.retencionIRPF = :retencionIRPF';
             }
-            /*
-            if (isset($_vars["nacionalidad"])) {
-                $condiciones[]='ac.country_name LIKE :%nacionalidad%';
-            }*/
+            if (isset($_vars["id"])) {
+                $condiciones[]='ac.id LIKE :id';
+            }
             $sql = self::SELECT_FROM . ' WHERE ' . implode(' AND ', $condiciones) . ' ORDER BY ' . self::ORDER_COLUMNS[abs($order) - 1] . ' LIMIT '.  intval($offset) .','. intval($limit);
             if ($order < 0) {
                 $sql = self::SELECT_FROM . ' WHERE ' . implode(' AND ', $condiciones) . ' ORDER BY ' . self::ORDER_COLUMNS[abs($order) - 1] . ' DESC' . ' LIMIT '.  intval($offset) .','. intval($limit);
@@ -88,10 +87,9 @@ class UsuarioModel extends BaseDbModel
             if (isset($_vars["retencionIRPF"])) {
                 $condiciones[] = 'us.retencionIRPF = :retencionIRPF';
             }
-            /*
-            if (isset($_vars["nacionalidad"])) {
-                $condiciones[]='ac.country_name LIKE :%nacionalidad%';
-            }*/
+            if (isset($_vars["id"])) {
+                $condiciones[]='ac.id LIKE :id';
+            }
             $sql = self::COUNT_FROM . ' WHERE ' . implode(' AND ', $condiciones);
             $statement = $this->pdo->prepare($sql);
             $statement->execute($_vars);

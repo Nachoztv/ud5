@@ -11,25 +11,29 @@ use Decimal\Decimal;
 
 class UsuarioController extends BaseController
 {
+    const ORDER_DEFECTO = 1;
+
     public function testConnect(): void
     {
         $model = new \Com\Daw2\Models\UsuarioModel();
         $model->getUsuariosConnection();
     }
-
-    const ORDER_DEFECTO = 1;
 const TIPOS_IRPF = [18,20,30];
+    const TIPOS_ROL = [1,2,3,4,5,6];
     public function showUsers(): void
     {
         $model = new \Com\Daw2\Models\UsuarioModel();
         $modelRol = new \Com\Daw2\Models\RolModel();
+        $modelCountry = new \Com\Daw2\Models\CountryModel();
         $data = array('titulo' => 'Usuarios',
             'breadcumb' => array('Inicio' => array('url' => '#', 'active' => false)),
         );
         $data['tiposRol'] = $modelRol->getUsersByRol();
         $data['tiposIrpf'] = $model->getTypesOfIrpf();
+        $data['tiposCountry'] = $modelCountry->getCountries();
         $data['input']['id_rol'] = $_GET['id_rol'] ?? '';
         $data['input']['retencionIRPF'] = $_GET['retencionIRPF'] ?? '';
+        $data['input']['id'] = $_GET['id'] ?? '';
         $_vars = [];
         if (!empty($_GET['user'])) {
             $_vars['user'] = '%' . $_GET['user'] . '%';
@@ -47,8 +51,8 @@ const TIPOS_IRPF = [18,20,30];
             $_vars['retencionIRPF'] = $_GET['retencionIRPF'];
         }
 
-        if (!empty($_GET['nacionalidad'])) {
-            $_vars['nacionalidad'] = $_GET['nacionalidad'];
+        if (!empty($_GET['id'])) {
+            $_vars['id'] = $_GET['id'];
         }
         if (empty($_vars)) {
             $usuarios = $model->getUsers();
@@ -93,7 +97,29 @@ const TIPOS_IRPF = [18,20,30];
         $data['usuarios'] = $this->calcularNeto($usuarios);
         $this->view->showViews(array('templates/header.view.php', 'UsuarioView.view.php', 'templates/footer.view.php'), $data);
     }
-
+    public function checkform(array $data): array
+    {
+        $errors = [];
+        if (!preg_match('/^[\p{L}\p{N}_]/iu', $data['user'])) {
+            $errors['user'] = 'El nombre debe tener letras, numeros o _.';
+        }
+        if (!filter_var($data['salBruto'], FILTER_VALIDATE_FLOAT)) {
+            $errors['salary'] = 'Introduce un salario válido';
+        }
+        if (!isset($data['check'])) {
+            $errors['check'] = 'Inidica si esta activo o no';
+        }
+        if (!in_array($data['retencionIRPF'], self::TIPOS_IRPF)) {
+            $errors['retencionIRPF'] = 'Selecciona un irpf';
+        }
+        if (!in_array($data['id_rol'], self::TIPOS_ROL)) {
+                $errors['id_rol'] = "Selecciona un rol";
+        }
+        if (!isset($data['check'])) {
+            $errors['check'] = 'Acepta los terminos para continuar';
+        }
+        return $errors;
+    }
     private function getOrderColumn(): int
     {
         if (isset($_GET['order']) && filter_var($_GET['order'], FILTER_VALIDATE_INT)) {
