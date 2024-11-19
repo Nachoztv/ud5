@@ -79,16 +79,19 @@ const TIPOS_IRPF = [18,20,30];
 
 
         $_copiaGET = $_GET;
+
         unset($_copiaGET['page']);
         $data['queryStringNoPage'] = http_build_query($_copiaGET);
-
-        if (!empty($data['queryString'])) {
-            $data['queryStringNoPage'] .= '&';
-        }
 
         unset($_copiaGET['order']);
 
         $data['queryString'] = http_build_query($_copiaGET);
+
+        if (!empty($data['queryStringNoPage'])) {
+            $data['queryStringNoPage'] .= '&';
+        }
+
+
         if (!empty($data['queryString'])) {
             $data['queryString'] .= '&';
         }
@@ -106,8 +109,8 @@ const TIPOS_IRPF = [18,20,30];
         if (!filter_var($data['salBruto'], FILTER_VALIDATE_FLOAT)) {
             $errors['salary'] = 'Introduce un salario válido';
         }
-        if (!isset($data['check'])) {
-            $errors['check'] = 'Inidica si esta activo o no';
+        if (!isset($data['active'])) {
+            $errors['active'] = 'Inidica si esta activo o no';
         }
         if (!in_array($data['retencionIRPF'], self::TIPOS_IRPF)) {
             $errors['retencionIRPF'] = 'Selecciona un irpf';
@@ -115,10 +118,19 @@ const TIPOS_IRPF = [18,20,30];
         if (!in_array($data['id_rol'], self::TIPOS_ROL)) {
                 $errors['id_rol'] = "Selecciona un rol";
         }
-        if (!isset($data['check'])) {
-            $errors['check'] = 'Acepta los terminos para continuar';
+        if (!empty($data['id'])) {
+            $errors['id'] = 'Selecciona un pais';
         }
         return $errors;
+    }
+    public  function insertUser(): void
+    {
+        $data = $_POST;
+        $data['errors'] = $this->checkform($data);
+        if (empty($data['errors'])){
+
+        }
+        $this->view->showViews(array('templates/header.view.php', 'UsuarioView.view.php', 'templates/footer.view.php'), $data);
     }
     private function getOrderColumn(): int
     {

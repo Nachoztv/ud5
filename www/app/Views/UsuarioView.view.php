@@ -36,6 +36,13 @@
                             <p class="text-danger small"><?php echo $errors['retencionIRPF'] ?? ''; ?></p>
                         </div>
                     </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" id="active">
+                        <label class="form-check-label" for="active">
+                            Activo
+                        </label>
+                        <?php echo $errors['active'] ?? ''; ?>
+                    </div>
                     <div class="col-12 col-lg-4">
                         <div class="mb-3">
                             <label for="id_rol">Tipo De Rol:</label>
@@ -56,10 +63,10 @@
                     <div class="col-12 col-lg-4">
                         <div class="mb-3">
                             <label for="salMin">Salario Minimo:</label>
-                            <input type="number" class="form-control" name="salMin" id="salMin"
+                            <input type="text" class="form-control" name="salMin" id="salMin"
                                    value="<?php echo $_GET['salMin'] ?? ''; ?>"/>
                             <label for="salMax">Salario Maximo:</label>
-                            <input type="number" class="form-control" name="salMax" id="salMax"
+                            <input type="text" class="form-control" name="salMax" id="salMax"
                                    value="<?php echo $_GET['salMax'] ?? ''; ?>"/>
                         </div>
                         <p class="text-danger small"><?php echo $errors['salary'] ?? ''; ?></p>
@@ -81,7 +88,7 @@
                             <p class="text-danger small"><?php echo $errors['id'] ?? ''; ?></p>
                         </div>
                     </div>
-                    <input type="submit" name="submit" class="btn btn-primary " value="Insertar"/>
+                    <input type="submit" name="submit" class="btn btn-primary " value="Filtrar"/>
         </form>
     </div>
 </div>

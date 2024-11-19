@@ -178,4 +178,17 @@ class UsuarioModel extends BaseDbModel
         $_users = $stmt->fetchAll();
         return $_users;
     }
+    public function addUser(array $data){
+        $stmt = $this->db->prepare( "INSERT INTO usuario (username, salarioBruto, retencionIRPF,activo,id_rol,id_country) VALUES (:username, :salarioBruto, :retencionIRPF,:activo,:id_rol,:id_country)");
+
+
+        $stmt->bindParam(':username', $data['user']);
+        $stmt->bindParam(':salarioBruto', $data['salBruto']);
+        $stmt->bindParam(':retencionIRPF', $data['retencionIRPF']);
+        $stmt->bindParam(':activo', $data['active']);
+        $stmt->bindParam(':id_rol', $data['id_rol']);
+        $stmt->bindParam(':id_country', $data['id']);
+
+        return $stmt->execute();
+    }
 }
